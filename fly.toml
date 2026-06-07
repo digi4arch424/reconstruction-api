@@ -1,6 +1,5 @@
 # =============================================================================
 # reconstruction-api — Fly.io deployment config
-# Docs: https://fly.io/docs/reference/configuration/
 # =============================================================================
 
 app            = "reconstruction-api"
@@ -10,13 +9,21 @@ primary_region = "syd"
 
 [env]
   ENVIRONMENT = "production"
+  PORT        = "8000"
 
 [http_service]
-  internal_port       = 8000
-  force_https         = true
-  auto_stop_machines  = false
-  auto_start_machines = true
+  internal_port        = 8000
+  force_https          = true
+  auto_stop_machines   = false
+  auto_start_machines  = true
   min_machines_running = 1
+
+  [[http_service.checks]]
+    grace_period  = "10s"
+    interval      = "30s"
+    method        = "GET"
+    path          = "/health"
+    timeout       = "10s"
 
   [http_service.concurrency]
     type       = "connections"
